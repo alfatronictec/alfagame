@@ -41,6 +41,7 @@ int ano=0;
 int nivel=0;
 int nota=0;
 int flagnota=0;
+int resposta=0;
 int batValue=0;
 float mappedValue =0;
 int flagoff=0;
@@ -56,6 +57,7 @@ void puloalfa(int nump);
 void medalha (int posi);
 void alfaebeto(void);
 void telanota(int retornonota);
+void tela_pergunta(const char* frase1, const char* frase2, const char* frase3, const char* frase4, const char* frase5, int resp_correta);
 
 //Setup
 void setup(void)
@@ -198,129 +200,16 @@ void loop(void)
               Serial.println(p1);
               if (p1==0)//--------------------------------------------PERGUNTAS DO PRIMEIRO ANO FACEIS 1 REVISADA
               {
-                  telaperg3();
-                  tft.setCursor(20, 20);
-                  tft.setTextColor(BLACK);
-                  tft.setTextSize(2);
-                  tft.println("JUNTE AS VOGAIS: 1");
-                  tft.setCursor(20, 50);
-                  tft.println("A + I =");
-                  tft.setCursor(40, 110);
-                  tft.println("A- AI");
-                  tft.setCursor(40, 160);
-                  tft.println("B- IA");
-                  tft.setCursor(40, 210);
-                  tft.println("C- AE");
-                  while (flagnota ==0 )
-                  {
-                      if (digitalRead(bta) == 0) //A
-                      {
-                          nota= nota + 1;
-                          flagnota = 1;
-                          telanota(1);//acertou
-                          delay(1000);
-                      }
-                      if (digitalRead(btb) == 0)//B
-                      {
-                          nota= nota;
-                          flagnota = 1;
-                          telanota(0);//errou
-                          delay(1000);
-                      }
-                      if (digitalRead(btc) == 0)//C
-                      {
-                          nota= nota;
-                          flagnota = 1;
-                          telanota(0);//errou
-                          delay(1000);
-                      }
-                      delay(10);
-                  }
-                  flagnota=0;
+                tela_pergunta("JUNTE AS VOGAIS: 1", "A + I =","A- AI","B- IA","C- AE",1);
               }
               else if (p1==1)
               {
-                  telaperg3();
-                  tft.setCursor(20, 20);
-                  tft.setTextColor(BLACK);
-                  tft.setTextSize(2);
-                  tft.println("JUNTE AS VOGAIS: 2");
-                  tft.setCursor(20, 50);
-                  tft.println("I + A =");
-                  tft.setCursor(40, 110);
-                  tft.println("A- AI");
-                  tft.setCursor(40, 160);
-                  tft.println("B- IA");
-                  tft.setCursor(40, 210);
-                  tft.println("C- AE");
-                  while (flagnota ==0 )
-                  {
-                      if (digitalRead(bta) == 0) //A
-                      {
-                          nota= nota;
-                          flagnota = 1;
-                          telanota(0);//errou
-                          delay(1000);
-                      }
-                      if (digitalRead(btb) == 0)//B
-                      {
-                          nota= nota + 1;
-                          flagnota = 1;
-                          telanota(1);//acertou
-                          delay(1000);
-                      }
-                      if (digitalRead(btc) == 0)//C
-                      {
-                          nota= nota;
-                          flagnota = 1;
-                          telanota(0);//errou
-                          delay(1000);
-                      }
-                      delay(10);
-                  }
-                  flagnota=0;
+                tela_pergunta("JUNTE AS VOGAIS: 2", "I + A =","A- AI","B- IA","C- AE",2);
               }
               else 
               {
-                  telaperg3();
-                  tft.setCursor(20, 20);
-                  tft.setTextColor(BLACK);
-                  tft.setTextSize(2);
-                  tft.println("JUNTE AS VOGAIS: 3");
-                  tft.setCursor(20, 50);
-                  tft.println("E + U =");
-                  tft.setCursor(40, 110);
-                  tft.println("A- UE");
-                  tft.setCursor(40, 160);
-                  tft.println("B- EU");
-                  tft.setCursor(40, 210);
-                  tft.println("C- UA");
-                  while (flagnota ==0 )
-                  {
-                      if (digitalRead(bta) == 0) //A
-                      {
-                          nota= nota;
-                          flagnota = 1;
-                          telanota(0);//errou
-                          delay(1000);
-                      }
-                      if (digitalRead(btb) == 0)//B
-                      {
-                          nota= nota + 1;
-                          flagnota = 1;
-                          telanota(1);//acertou
-                          delay(1000);
-                      }
-                      if (digitalRead(btc) == 0)//C
-                      {
-                          nota= nota;
-                          flagnota = 1;
-                          telanota(0);//errou
-                          delay(1000);
-                      }
-                      delay(10);
-                  }
-                  flagnota=0;
+                tela_pergunta("JUNTE AS VOGAIS: 3", "E + U =","A- UE","B- EU","C- UA",2);
+
               }//-------------------------------------------- FIM PERGUNTAS DO PRIMEIRO ANO FACEIS 1 REVISADA
 
               delay(1000);
@@ -3932,6 +3821,64 @@ void medalha (int posi)
     tft.fillCircle(160, 160, 25, OURO); // ALFA
   }
 }
+
+void tela_pergunta(const char* frase1, const char* frase2, const char* frase3, const char* frase4, const char* frase5, int resp_correta)
+{
+    tft.fillScreen(AZULCEU);
+    tft.fillRect(1, 200, 320, 40, GREEN);
+    tft.fillRect(10, 5, 305, 80, WHITE); 
+    tft.fillRect(30, 95, 260, 40, WHITE); 
+    tft.fillRect(30, 145, 260, 40, WHITE); 
+    tft.fillRect(30, 195, 260, 40, WHITE); 
+    tft.setTextColor(BLACK);
+    tft.setTextSize(2);
+    tft.setCursor(20, 20);
+    tft.println(frase1);
+    tft.setCursor(20, 50);
+    tft.println(frase2);
+    tft.setCursor(40, 110);
+    tft.println(frase3);               
+    tft.setCursor(40, 160);            
+    tft.println(frase4);          
+    tft.setCursor(40, 210);
+    tft.println(frase5);
+
+    while (flagnota == 0)
+    {
+        if (digitalRead(bta) == 0) //A
+        {
+            resposta = 1;
+            flagnota = 1;
+            delay(500);
+        }
+        if (digitalRead(btb) == 0)//B
+        {
+            resposta = 2;
+            flagnota = 1;
+            delay(500);
+        }
+        if (digitalRead(btc) == 0)//C
+        {
+            resposta = 3;
+            flagnota = 1;
+            delay(500);
+        }
+        delay(10);
+    }
+
+    if (resp_correta == resposta)
+    {
+        telanota(1); // acertou
+        nota = nota + 1;
+    }
+    else
+    {
+        telanota(0);
+        nota = nota;
+    }
+    flagnota=0;
+}
+
 
 void telaperg2(void)
 {

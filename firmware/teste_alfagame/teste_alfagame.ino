@@ -2,18 +2,6 @@
 #include <SPI.h>
 
 // DEFINIÇÕES
-//#define BLACK   0x0000
-//#define BLUE    0x001F
-//#define RED     0xF800
-//#define GREEN   0x07E0
-//#define YELLOW  0xFFE0
-//#define WHITE   0xFFFF
-//#define AZULCEU 0x273C
-//#define CINZA   0x6A5ACD
-//#define BRONZE  0xFF8C00
-//#define OURO    0x7FFF00
-
-// DEFINIÇÕES
 #define BLACK   0xFFFF// OK
 #define CINZA   0x6A5ACD // OK
 #define YELLOW  0x001F// OK
@@ -36,63 +24,34 @@ TFT_eSPI tft = TFT_eSPI();  // Invoke library, pins defined in User_Setup.h
 
 int flagnota=0;
 int nota=0;
+int resposta=0;
 
-void fundo(void);
-void telaperg3(void);
-void telanota(int retornonota);
+void tela_pergunta(const char* frase1, const char* frase2, const char* frase3, const char* frase4, const char* frase5, int resp_correta);
+void tela_nota(int retornonota);
 
 void setup() 
 {
     Serial.begin(115200);
     Serial.println("TESTE");
+    pinMode(bta,INPUT_PULLUP); 
+    pinMode(btb,INPUT_PULLUP); 
+    pinMode(btc,INPUT_PULLUP); 
+    pinMode(btd,INPUT_PULLUP); 
     tft.init();
     tft.setRotation(1);
-    fundo();
 }
 
 void loop() 
 {
-    telaperg3("JUNTE AS VOGAIS: 1", "A + I =","A- AI","B- IA","C- AE");
-
-    delay(6000);
-
-    while (flagnota ==0 )
-    {
-        if (digitalRead(bta) == 0) //A
-        {
-            nota= nota + 1;
-            flagnota = 1;
-            telanota(1);//acertou
-            delay(1000);
-        }
-        if (digitalRead(btb) == 0)//B
-        {
-            nota= nota;
-            flagnota = 1;
-            telanota(0);//errou
-            delay(1000);
-        }
-        if (digitalRead(btc) == 0)//C
-        {
-            nota= nota;
-            flagnota = 1;
-            telanota(0);//errou
-            delay(1000);
-        }
-        delay(10);
-    }
-    flagnota=0;
-
-    delay(2000);
-    fundo();
+    tela_pergunta("JUNTE AS VOGAIS: 1", "A + I =","A- AI","B- IA","C- AE",1);
     delay(2000);
     Serial.println("TESTE");
 
 }
 
-void telaperg3(const char* frase1, const char* frase2, const char* frase3, const char* frase4, const char* frase5)
+void tela_pergunta(const char* frase1, const char* frase2, const char* frase3, const char* frase4, const char* frase5, int resp_correta)
 {
-    fundo();
+    tft.fillScreen(AZULCEU);
     tft.fillRect(1, 200, 320, 40, GREEN);
     tft.fillRect(10, 5, 305, 80, WHITE); 
     tft.fillRect(30, 95, 260, 40, WHITE); 
@@ -110,12 +69,46 @@ void telaperg3(const char* frase1, const char* frase2, const char* frase3, const
     tft.println(frase4);          
     tft.setCursor(40, 210);
     tft.println(frase5);
+
+    while (flagnota == 0)
+    {
+        if (digitalRead(bta) == 0) //A
+        {
+            resposta = 1;
+            flagnota = 1;
+            delay(500);
+        }
+        if (digitalRead(btb) == 0)//B
+        {
+            resposta = 2;
+            flagnota = 1;
+            delay(500);
+        }
+        if (digitalRead(btc) == 0)//C
+        {
+            resposta = 3;
+            flagnota = 1;
+            delay(500);
+        }
+        delay(10);
+    }
+
+    if (resp_correta == resposta)
+    {
+        tela_nota(1); // acertou
+        nota = nota + 1;
+    }
+    else
+    {
+        tela_nota(0);
+        nota = nota;
+    }
+    flagnota=0;
 }
 
-void telanota(int retornonota)
+void tela_nota(int retornonota)
 {
   tft.fillScreen(CINZA);
-
   ////////////////////////////////////////////////////////////////////////BETO
   tft.fillRect(50, 40, 110, 180, AZULCEU); 
   tft.fillCircle(75, 110, 10, RED); // BOCHECHA ESQUERDA
@@ -159,10 +152,4 @@ void telanota(int retornonota)
       tft.setCursor(210, 72);     // Desloca 1px para a direita
       tft.println("X");           // Texto sobreposto
   }
-}
-
-void fundo(void)
-{
-  tft.fillScreen(AZULCEU);
-  tft.fillRect(1, 200, 320, 40, GREEN);
 }
